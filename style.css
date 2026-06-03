@@ -46,10 +46,6 @@ h1 {
     align-items: center;
     gap: 10px;
 }
-.visit-counter img {
-    height: 20px; 
-    filter: drop-shadow(0 0 3px #39ff14); 
-}
 
 /* サイコロエリア（お椀のデザイン） */
 .dice-area {
