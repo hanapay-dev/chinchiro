@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>チンチロ</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+
+    <div class="container">
+        <main class="game-main">
+            <h1>チンチロ</h1>
+            
+            <div class="visit-counter">
+                TOTAL VISITS: <img src="https://profile-counter.glitch.me/ユーザー名/count.svg" alt="Visit Counter">
+            </div>
+            
+            <div class="dice-area">
+                <div id="dice1" class="dice"></div>
+                <div id="dice2" class="dice"></div>
+                <div id="dice3" class="dice"></div>
+            </div>
+
+            <div class="action-area">
+                <button id="roll-button">サイコロを振る！</button>
+            </div>
+
+            <div class="result-area">
+                <span id="result-text">ボタンを押してスタート</span>
+            </div>
+
+            <div class="version-display">Ver 1.1</div>
+        </main>
+
+        <aside class="history-sidebar">
+            <h2>統計データ</h2>
+            <div class="total-rolls">
+                合計プレイ回数: <span id="total-count">0</span> 回
+            </div>
+            
+            <table class="stats-table">
+                <thead>
+                    <tr>
+                        <th>役名</th>
+                        <th>本来の確率</th>
+                        <th>回数</th>
+                        <th>実戦確率</th>
+                    </tr>
+                </thead>
+                <tbody id="stats-body">
+                    </tbody>
+            </table>
+
+            <button id="reset-stats-button">統計データをリセット</button>
+        </aside>
+    </div>
+
+    <div id="freeze-overlay">
+        <div id="freeze-word" class="freeze-text">GOD</div>
+    </div>
+
+    <script src="app.js"></script>
+</body>
+</html>
