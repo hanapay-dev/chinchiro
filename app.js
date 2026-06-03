@@ -23,9 +23,9 @@ const statsBody = document.getElementById('stats-body');
 const freezeOverlay = document.getElementById('freeze-overlay');
 const freezeWord = document.getElementById('freeze-word');
 
-// 役の定義・カウント・理論上の出現確率
+// 役の定義・カウント・理論上の出現確率（special777を 1.00% に変更）
 let roles = [
-    { key: 'special777', name: '777（特殊役）', count: 0, prob: '0.012%' }, 
+    { key: 'special777', name: '777（特殊役）', count: 0, prob: '1.00%' }, 
     { key: 'pinzoro',    name: 'ピンゾロ',       count: 0, prob: '0.45%' },  
     { key: 'zoro6',      name: '6のゾロ目',      count: 0, prob: '0.45%' },
     { key: 'zoro5',      name: '5のゾロ目',      count: 0, prob: '0.45%' },
@@ -199,10 +199,11 @@ rollButton.addEventListener('click', () => {
     let finalRoleKey = '';
     let finalRoleName = '';
 
-    const rand8192 = Math.floor(Math.random() * 8192); 
+    // 確率判定用の乱数（1/100に調整）
+    const rand100 = Math.floor(Math.random() * 100); 
     const rand50 = Math.floor(Math.random() * 50);
 
-    if (rand8192 === 0) {
+    if (rand100 === 0) { // 0〜99のうち「0」が出たら1/100でフリーズ
         finalDice = [7, 7, 7];
         finalRoleKey = 'special777';
         finalRoleName = '奇跡の777（特殊役）！！！';
