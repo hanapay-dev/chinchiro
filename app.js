@@ -23,27 +23,25 @@ const statsBody = document.getElementById('stats-body');
 const freezeOverlay = document.getElementById('freeze-overlay');
 const freezeWord = document.getElementById('freeze-word');
 
-// --- 役の定義・カウント・理論上の出現確率 ---
-// ★修正：prob（本来の確率の文字列）を各役に追加
-// 通常ルートの合計分母は216。場外確率(1/50)とGOD確率(1/8192)を考慮した厳密な％を記載しています。
+// 役の定義・カウント・理論上の出現確率
 let roles = [
-    { key: 'special777', name: '777（特殊役）', count: 0, prob: '0.012%' }, // 1/8192
-    { key: 'pinzoro',    name: 'ピンゾロ',       count: 0, prob: '0.45%' },  // 通常時の1/216の約98%
+    { key: 'special777', name: '777（特殊役）', count: 0, prob: '0.012%' }, 
+    { key: 'pinzoro',    name: 'ピンゾロ',       count: 0, prob: '0.45%' },  
     { key: 'zoro6',      name: '6のゾロ目',      count: 0, prob: '0.45%' },
     { key: 'zoro5',      name: '5のゾロ目',      count: 0, prob: '0.45%' },
     { key: 'zoro4',      name: '4のゾロ目',      count: 0, prob: '0.45%' },
     { key: 'zoro3',      name: '3のゾロ目',      count: 0, prob: '0.45%' },
     { key: 'zoro2',      name: '2のゾロ目',      count: 0, prob: '0.45%' },
-    { key: 'shigoro',    name: 'シゴロ(4-5-6)',  count: 0, prob: '2.72%' },  // 6/216の約98%
-    { key: 'normal_me6', name: '6の目',          count: 0, prob: '6.81%' },  // 各 15/216の約98%
+    { key: 'shigoro',    name: 'シゴロ(4-5-6)',  count: 0, prob: '2.72%' },  
+    { key: 'normal_me6', name: '6の目',          count: 0, prob: '6.81%' },  
     { key: 'normal_me5', name: '5の目',          count: 0, prob: '6.81%' },
     { key: 'normal_me4', name: '4の目',          count: 0, prob: '6.81%' },
     { key: 'normal_me3', name: '3の目',          count: 0, prob: '6.81%' },
     { key: 'normal_me2', name: '2の目',          count: 0, prob: '6.81%' },
     { key: 'normal_me1', name: '1の目',          count: 0, prob: '6.81%' },
-    { key: 'menashi',    name: '目なし',         count: 0, prob: '43.56%' }, // 96/216の約98%
-    { key: 'hifumi',     name: 'ヒフミ(1-2-3)',  count: 0, prob: '2.72%' },  // 6/216の約98%
-    { key: 'shonben',    name: '場外',           count: 0, prob: '2.00%' }   // 1/50
+    { key: 'menashi',    name: '目なし',         count: 0, prob: '43.56%' }, 
+    { key: 'hifumi',     name: 'ヒフミ(1-2-3)',  count: 0, prob: '2.72%' },  
+    { key: 'shonben',    name: '場外',           count: 0, prob: '2.00%' }   
 ];
 
 let totalRolls = 0;
@@ -117,7 +115,7 @@ function renderDice(element, value) {
     });
 }
 
-// --- LocalStorage からデータを読み込む関数 ---
+// LocalStorage からデータを読み込む関数
 function loadGameData() {
     const savedTotalRolls = localStorage.getItem('chinchiro_total_rolls');
     if (savedTotalRolls !== null) {
@@ -137,7 +135,7 @@ function loadGameData() {
     updateUI();
 }
 
-// --- LocalStorage へデータを保存する関数 ---
+// LocalStorage へデータを保存する関数
 function saveGameData() {
     localStorage.setItem('chinchiro_total_rolls', totalRolls);
 
@@ -164,7 +162,6 @@ function updateUI() {
             percentage = ((role.count / totalRolls) * 100).toFixed(2) + '%';
         }
 
-        // ★修正：本来の確率（role.prob）の列を追加して4列構成に出力
         tr.innerHTML = `
             <td>${role.name}</td>
             <td>${role.prob}</td>

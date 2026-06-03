@@ -51,7 +51,7 @@ h1 {
     filter: drop-shadow(0 0 3px #39ff14); 
 }
 
-/* ★大幅修正：サイコロエリア（お椀） */
+/* サイコロエリア（お椀のデザイン） */
 .dice-area {
     display: grid;
     grid-template-columns: 1fr 1fr;
@@ -69,23 +69,23 @@ h1 {
     margin-bottom: 40px; 
 }
 
-/* ★修正：1個目のサイコロをさらに上へ引き上げ、上下の間隔を広げました */
+/* 1個目のサイコロ（上段中央・上下間隔広め調整） */
 #dice1 {
     grid-column: 1 / span 2;
     grid-row: 1;
-    transform: translateY(2px); /* 15px から 2px に戻して上方向へ移動 */
+    transform: translateY(2px); 
 }
 
-/* ★修正：2番目と3番目のサイコロをさらに下へ下げ、上下の間隔を広げました */
+/* 2番目と3番目のサイコロ（下段・左右および上下間隔広め調整） */
 #dice2 {
     grid-column: 1;
     grid-row: 2;
-    transform: translateX(-5px) translateY(2px); /* -10px から 2px に下げて下方向へ移動 */
+    transform: translateX(-5px) translateY(2px); 
 }
 #dice3 {
     grid-column: 2;
     grid-row: 2;
-    transform: translateX(5px) translateY(2px); /* -10px から 2px に下げて下方向へ移動 */
+    transform: translateX(5px) translateY(2px); 
 }
 
 /* サイコロ本体 */
