@@ -166,14 +166,13 @@ rollButton.addEventListener('click', () => {
     let finalRoleKey = '';
     let finalRoleName = '';
 
-    //const rand100 = 0
     const rand100 = Math.floor(Math.random() * 100); 
     const rand50 = Math.floor(Math.random() * 50);
 
     if (rand100 === 0) { 
         finalDice = [7, 7, 7];
         finalRoleKey = 'special777';
-        finalRoleName = '奇跡の777（特殊役）！！！';
+        finalRoleName = '特殊役！！！';
     } else if (rand50 === 0) {
         finalDice = [0, 0, 0];
         finalRoleKey = 'shonben';
