@@ -1,3 +1,4 @@
+
 body {
     margin: 0;
     padding: 0;
@@ -35,7 +36,7 @@ h1 {
     letter-spacing: 4px;
 }
 
-/* ★サイコロエリア（完全に綺麗な丸型お椀デザイン） */
+/* サイコロエリア（お椀：綺麗な丸型デザイン） */
 .dice-area {
     display: flex;
     flex-wrap: wrap;
@@ -245,7 +246,7 @@ h1 {
 .stats-table td { color: #aaccff; }
 .stats-table td:nth-child(2) { color: #6688aa; }
 
-/* ★元のリセットボタンデザイン（赤ベース） */
+/* 統計リセットボタン（赤ベース） */
 #reset-stats-button {
     padding: 12px;
     background-color: transparent;
@@ -272,22 +273,45 @@ h1 {
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.85);
-    display: none;
+    background-color: rgba(0, 0, 0, 0.85); 
+    display: none;             
     justify-content: center;
     align-items: center;
     z-index: 9999;
 }
+
+/* 暗転開始（JS連動） */
+#freeze-overlay.active {
+    display: flex;
+}
+
+/* ★黄金調（ゴールドネオン）フェードイン演出 */
 .freeze-text {
     font-size: 8rem;
     font-weight: bold;
-    color: #ff0055;
-    text-shadow: 0 0 20px #ff0055, 0 0 40px #ff0055;
-    animation: pulse 0.5s infinite alternate;
+    color: #ffd700; /* 美しいゴールド */
+    text-shadow: 0 0 15px #ffa500, 0 0 30px #ffd700, 0 0 45px #ff8c00; /* 高級感のある黄金の輝き */
+    display: none;  
 }
-@keyframes pulse {
-    from { transform: scale(1); }
-    to { transform: scale(1.1); }
+
+/* JSで .fade-in がついたら「じわっと拡大しながら浮かび上がる」アニメーションを実行 */
+.freeze-text.fade-in {
+    display: block;
+    animation: goldFadeIn 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards; /* ループせず、浮かび上がってピタッと止まる */
+}
+
+/* 黄金調用の浮かび上がりキーフレーム（ループ点滅を廃止） */
+@keyframes goldFadeIn {
+    0% { 
+        transform: scale(0.4); 
+        opacity: 0;
+        filter: blur(5px); /* 最初は少しぼかして奥深さを演出 */
+    }
+    100% {
+        transform: scale(1.05); /* 迫ってくるように拡大して固定 */
+        opacity: 1;
+        filter: blur(0);
+    }
 }
 
 @media (max-width: 768px) {

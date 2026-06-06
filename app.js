@@ -166,7 +166,8 @@ rollButton.addEventListener('click', () => {
     let finalRoleKey = '';
     let finalRoleName = '';
 
-    const rand100 = Math.floor(Math.random() * 100); 
+    const rand100 = 0
+    //const rand100 = Math.floor(Math.random() * 100); 
     const rand50 = Math.floor(Math.random() * 50);
 
     if (rand100 === 0) { 
