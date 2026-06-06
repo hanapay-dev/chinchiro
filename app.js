@@ -23,7 +23,7 @@ const statsBody = document.getElementById('stats-body');
 const freezeOverlay = document.getElementById('freeze-overlay');
 const freezeWord = document.getElementById('freeze-word');
 
-// 役の定義・カウント・理論上の出現確率（special777を 1.00% に変更）
+// 役の定義・カウント・理論上の出現確率
 let roles = [
     { key: 'special777', name: '777（特殊役）', count: 0, prob: '1.00%' }, 
     { key: 'pinzoro',    name: 'ピンゾロ',       count: 0, prob: '0.45%' },  
@@ -199,11 +199,11 @@ rollButton.addEventListener('click', () => {
     let finalRoleKey = '';
     let finalRoleName = '';
 
-    // 確率判定用の乱数（1/100に調整）
+    //const rand100 = 0
     const rand100 = Math.floor(Math.random() * 100); 
     const rand50 = Math.floor(Math.random() * 50);
 
-    if (rand100 === 0) { // 0〜99のうち「0」が出たら1/100でフリーズ
+    if (rand100 === 0) { 
         finalDice = [7, 7, 7];
         finalRoleKey = 'special777';
         finalRoleName = '奇跡の777（特殊役）！！！';
@@ -226,6 +226,7 @@ rollButton.addEventListener('click', () => {
     const audio = new Audio(soundFiles[randomSoundIndex]);
     audio.play().catch(e => console.log("音声再生エラー:", e));
 
+    // サイコロのシャッフルを開始
     const shuffleInterval = setInterval(() => {
         diceElements.forEach(dice => {
             const randomVal = Math.floor(Math.random() * 6) + 1;
@@ -233,31 +234,42 @@ rollButton.addEventListener('click', () => {
         });
     }, 100);
 
-    // プチュン（フリーズ）演出ルート
+    // ========================================================
+    // 【ルート分岐】特殊役（777）だった場合のロングフリーズ演出
+    // ========================================================
     if (finalRoleKey === 'special777') {
+        // 通常の0.5秒を無視し、5000ミリ秒（5秒間）シャッフルし続ける
         setTimeout(() => {
-            clearInterval(shuffleInterval);
-            audio.pause();
+            clearInterval(shuffleInterval); // 5秒後にシャッフル停止
+            audio.pause();                  // ガラガラ音をストップ
             audio.currentTime = 0;
 
+            // ① 画面を真っ暗（黒オーバーレイをアクティブ）にする
             freezeOverlay.classList.add('active');
+            
+            // ② 画面が暗くなると同時にフリーズ始動音を鳴らす
             const startAudio = new Audio(freezeStartSound);
             startAudio.play().catch(e => console.log("フリーズ始動音エラー:", e));
             
+            // ③ 暗転の0.3秒後に「GOD」の文字をフェードイン開始
             setTimeout(() => {
                 freezeWord.classList.add('fade-in');
             }, 300);
 
+            // ④ 3.8秒間の暗転演出ののち、結果画面へ移行
             setTimeout(() => {
                 freezeOverlay.classList.remove('active');
                 freezeWord.classList.remove('fade-in');
 
+                // 確定音（プチュンインパクト音）を鳴らす
                 const impactAudio = new Audio(freezeImpactSound);
                 impactAudio.play().catch(e => console.log("フリーズ確定音エラー:", e));
 
+                // 画面に出目を表示
                 diceElements.forEach(dice => renderDice(dice, 7));
                 resultText.textContent = finalRoleName;
 
+                // データの集計とセーブ
                 totalRolls++;
                 roles.find(r => r.key === 'special777').count++;
                 saveGameData();
@@ -266,11 +278,13 @@ rollButton.addEventListener('click', () => {
                 rollButton.disabled = false;
             }, 3800); 
 
-        }, 200); 
+        }, 5000); // 👈 ここを「5000」にすることで5秒間違和感シャッフルになります！
         return; 
     }
 
-    // 通常ルートの確定処理
+    // ========================================================
+    // 通常役・通常ルートの確定処理（こちらは従来通り0.5秒）
+    // ========================================================
     setTimeout(() => {
         clearInterval(shuffleInterval);
 
