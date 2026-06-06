@@ -46,11 +46,9 @@ let roles = [
 
 let totalRolls = 0;
 
-// 出目に応じてサイコロのドット、または「7」「外」を切り替える関数
 function renderDice(element, value) {
     element.innerHTML = ''; 
     element.removeAttribute('data-value');
-    
     element.style.display = ''; 
     element.style.backgroundColor = '#fff'; 
     element.style.color = '';
@@ -115,78 +113,47 @@ function renderDice(element, value) {
     });
 }
 
-// LocalStorage からデータを読み込む関数
 function loadGameData() {
     const savedTotalRolls = localStorage.getItem('chinchiro_total_rolls');
-    if (savedTotalRolls !== null) {
-        totalRolls = parseInt(savedTotalRolls, 10);
-    }
-
+    if (savedTotalRolls !== null) totalRolls = parseInt(savedTotalRolls, 10);
     const savedRoles = localStorage.getItem('chinchiro_roles');
     if (savedRoles !== null) {
         const parsedRoles = JSON.parse(savedRoles);
         roles.forEach(role => {
-            if (parsedRoles[role.key] !== undefined) {
-                role.count = parsedRoles[role.key];
-            }
+            if (parsedRoles[role.key] !== undefined) role.count = parsedRoles[role.key];
         });
     }
-
     updateUI();
 }
 
-// LocalStorage へデータを保存する関数
 function saveGameData() {
     localStorage.setItem('chinchiro_total_rolls', totalRolls);
-
     const rolesToSave = {};
-    roles.forEach(role => {
-        rolesToSave[role.key] = role.count;
-    });
+    roles.forEach(role => rolesToSave[role.key] = role.count);
     localStorage.setItem('chinchiro_roles', JSON.stringify(rolesToSave));
 }
 
-// 画面表示を一括更新する関数
 function updateUI() {
     totalCountElement.textContent = totalRolls;
     statsBody.innerHTML = ''; 
-
     roles.forEach(role => {
-        if (role.key === 'special777' && role.count === 0) {
-            return; 
-        }
-
+        if (role.key === 'special777' && role.count === 0) return; 
         const tr = document.createElement('tr');
         let percentage = '0.00%';
-        if (totalRolls > 0) {
-            percentage = ((role.count / totalRolls) * 100).toFixed(2) + '%';
-        }
-
-        tr.innerHTML = `
-            <td>${role.name}</td>
-            <td>${role.prob}</td>
-            <td>${role.count} 回</td>
-            <td>${percentage}</td>
-        `;
+        if (totalRolls > 0) percentage = ((role.count / totalRolls) * 100).toFixed(2) + '%';
+        tr.innerHTML = `<td>${role.name}</td><td>${role.prob}</td><td>${role.count} 回</td><td>${percentage}</td>`;
         statsBody.appendChild(tr);
     });
 }
 
-// チンチロの通常の出目から役を判定する関数
 function judgeDice(d1, d2, d3) {
     const dice = [d1, d2, d3].sort((a, b) => a - b);
-
     if (dice[0] === 1 && dice[1] === 1 && dice[2] === 1) return { key: 'pinzoro', name: 'ピンゾロ (最高役！)' };
-    if (dice[0] === dice[2]) {
-        const num = dice[0];
-        return { key: `zoro${num}`, name: `${num}のゾロ目` };
-    }
+    if (dice[0] === dice[2]) return { key: `zoro${dice[0]}`, name: `${dice[0]}のゾロ目` };
     if (dice[0] === 4 && dice[1] === 5 && dice[2] === 6) return { key: 'shigoro', name: 'シゴロ (4-5-6)' };
     if (dice[0] === 1 && dice[1] === 2 && dice[2] === 3) return { key: 'hifumi', name: 'ヒフミ (1-2-3)' };
-    
     if (dice[0] === dice[1]) return { key: `normal_me${dice[2]}`, name: `${dice[2]}の目` };
     if (dice[1] === dice[2]) return { key: `normal_me${dice[0]}`, name: `${dice[0]}の目` };
-
     return { key: 'menashi', name: '目なし' };
 }
 
@@ -199,8 +166,8 @@ rollButton.addEventListener('click', () => {
     let finalRoleKey = '';
     let finalRoleName = '';
 
-    //const rand100 = 0
-    const rand100 = Math.floor(Math.random() * 100); 
+    const rand100 = 0
+    //const rand100 = Math.floor(Math.random() * 100); 
     const rand50 = Math.floor(Math.random() * 50);
 
     if (rand100 === 0) { 
@@ -222,11 +189,16 @@ rollButton.addEventListener('click', () => {
         finalRoleName = judgment.name;
     }
 
+    // 【超重要】ボタンを押した瞬間に、フリーズ音2つを裏で事前に読み込んでおく（音ズレ・無音対策）
+    const startAudio = new Audio(freezeStartSound);
+    const impactAudio = new Audio(freezeImpactSound);
+    startAudio.load();
+    impactAudio.load();
+
     const randomSoundIndex = Math.floor(Math.random() * soundFiles.length);
     const audio = new Audio(soundFiles[randomSoundIndex]);
     audio.play().catch(e => console.log("音声再生エラー:", e));
 
-    // サイコロのシャッフルを開始
     const shuffleInterval = setInterval(() => {
         diceElements.forEach(dice => {
             const randomVal = Math.floor(Math.random() * 6) + 1;
@@ -235,41 +207,32 @@ rollButton.addEventListener('click', () => {
     }, 100);
 
     // ========================================================
-    // 【ルート分岐】特殊役（777）だった場合のロングフリーズ演出
+    // 特殊役（777）だった場合のロングフリーズ演出
     // ========================================================
     if (finalRoleKey === 'special777') {
-        // 通常の0.5秒を無視し、5000ミリ秒（5秒間）シャッフルし続ける
         setTimeout(() => {
-            clearInterval(shuffleInterval); // 5秒後にシャッフル停止
-            audio.pause();                  // ガラガラ音をストップ
+            clearInterval(shuffleInterval); 
+            audio.pause();                  
             audio.currentTime = 0;
 
-            // ① 画面を真っ暗（黒オーバーレイをアクティブ）にする
+            // ① 画面が暗転すると「同時に」音を再生（ラグがなくなります）
             freezeOverlay.classList.add('active');
-            
-            // ② 画面が暗くなると同時にフリーズ始動音を鳴らす
-            const startAudio = new Audio(freezeStartSound);
             startAudio.play().catch(e => console.log("フリーズ始動音エラー:", e));
             
-            // ③ 暗転の0.3秒後に「GOD」の文字をフェードイン開始
             setTimeout(() => {
                 freezeWord.classList.add('fade-in');
             }, 300);
 
-            // ④ 3.8秒間の暗転演出ののち、結果画面へ移行
             setTimeout(() => {
                 freezeOverlay.classList.remove('active');
                 freezeWord.classList.remove('fade-in');
 
-                // 確定音（プチュンインパクト音）を鳴らす
-                const impactAudio = new Audio(freezeImpactSound);
+                // ② ジャジャーン（確定音）を100%確実に再生
                 impactAudio.play().catch(e => console.log("フリーズ確定音エラー:", e));
 
-                // 画面に出目を表示
                 diceElements.forEach(dice => renderDice(dice, 7));
                 resultText.textContent = finalRoleName;
 
-                // データの集計とセーブ
                 totalRolls++;
                 roles.find(r => r.key === 'special777').count++;
                 saveGameData();
@@ -278,50 +241,39 @@ rollButton.addEventListener('click', () => {
                 rollButton.disabled = false;
             }, 3800); 
 
-        }, 5000); // 👈 ここを「5000」にすることで5秒間違和感シャッフルになります！
+        }, 5000); 
         return; 
     }
 
     // ========================================================
-    // 通常役・通常ルートの確定処理（こちらは従来通り0.5秒）
+    // 通常役・通常ルートの確定処理
     // ========================================================
     setTimeout(() => {
         clearInterval(shuffleInterval);
-
         diceElements.forEach((dice, index) => {
-            if (finalRoleKey === 'shonben') {
-                renderDice(dice, '外'); 
-            } else {
-                renderDice(dice, finalDice[index]);
-            }
+            if (finalRoleKey === 'shonben') renderDice(dice, '外'); 
+            else renderDice(dice, finalDice[index]);
         });
-
         resultText.textContent = finalRoleName;
-
         totalRolls++;
         const targetRole = roles.find(r => r.key === finalRoleKey);
         if (targetRole) targetRole.count++;
-        
         saveGameData();
         updateUI();
-        
         rollButton.disabled = false;
     }, 500); 
 });
 
-// 統計データのみリセット
 resetStatsButton.addEventListener('click', () => {
     if (confirm('すべての統計データ(プレイ回数・役の履歴)をリセットしますか？')) {
         totalRolls = 0;
         roles.forEach(role => role.count = 0);
         saveGameData();
         updateUI();
-        
         diceElements.forEach(dice => renderDice(dice, '-'));
         resultText.textContent = 'ボタンを押してスタート';
     }
 });
 
-// 初期表示を「-」に
 diceElements.forEach(dice => renderDice(dice, '-'));
 loadGameData();
