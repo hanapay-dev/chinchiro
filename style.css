@@ -1,4 +1,3 @@
-
 body {
     margin: 0;
     padding: 0;
@@ -266,14 +265,14 @@ h1 {
     box-shadow: 0 0 15px rgba(255, 0, 85, 0.6);
 }
 
-/* フリーズ演出用オーバーレイ */
+/* ★フリーズ演出用オーバーレイ（完全暗転専用・文字無し） */
 #freeze-overlay {
     position: fixed;
     top: 0;
     left: 0;
     width: 100vw;
     height: 100vh;
-    background-color: rgba(0, 0, 0, 0.85); 
+    background-color: #000000; /* 完全な不透明の漆黒 */
     display: none;             
     justify-content: center;
     align-items: center;
@@ -285,33 +284,9 @@ h1 {
     display: flex;
 }
 
-/* ★黄金調（ゴールドネオン）フェードイン演出 */
+/* 文字は非表示のままにするため、不要なプロパティを全削除 */
 .freeze-text {
-    font-size: 8rem;
-    font-weight: bold;
-    color: #ffd700; /* 美しいゴールド */
-    text-shadow: 0 0 15px #ffa500, 0 0 30px #ffd700, 0 0 45px #ff8c00; /* 高級感のある黄金の輝き */
-    display: none;  
-}
-
-/* JSで .fade-in がついたら「じわっと拡大しながら浮かび上がる」アニメーションを実行 */
-.freeze-text.fade-in {
-    display: block;
-    animation: goldFadeIn 1.5s cubic-bezier(0.25, 1, 0.5, 1) forwards; /* ループせず、浮かび上がってピタッと止まる */
-}
-
-/* 黄金調用の浮かび上がりキーフレーム（ループ点滅を廃止） */
-@keyframes goldFadeIn {
-    0% { 
-        transform: scale(0.4); 
-        opacity: 0;
-        filter: blur(5px); /* 最初は少しぼかして奥深さを演出 */
-    }
-    100% {
-        transform: scale(1.05); /* 迫ってくるように拡大して固定 */
-        opacity: 1;
-        filter: blur(0);
-    }
+    display: none !important;
 }
 
 @media (max-width: 768px) {
